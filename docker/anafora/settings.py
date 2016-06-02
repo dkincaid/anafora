@@ -68,18 +68,7 @@ STATIC_URL = '/static/'
 
 ROOT_URL = '/anafora'
 # Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    '',
-    '/home/davek/apps/anafora-1.1/src/main/static',
-    )
-#    /data/home/verbs/student/wech5560/Research/anaforaDevelop/src/main/static',
-#    '/data/home/verbs/student/wech5560/Research/anaforaDevelop/src/main/static/css',
-#    '/data/home/verbs/student/wech5560/Research/anaforaDevelop/src/main/static/js',
-#    '/data/home/verbs/student/wech5560/Research/anaforaDevelop/src/main/static/image',
-#)
+STATICFILES_DIRS = ('','/home/davek/apps/anafora-1.1/src/main/static',)
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -121,12 +110,7 @@ ROOT_URLCONF = 'web.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'web.wsgi.application'
 
-TEMPLATE_DIRS = (
-    '/home/davek/apps/anafora-1.1/src/Templates',
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
+TEMPLATE_DIRS = ( )
 
 INSTALLED_APPS = (
 #    'django.contrib.auth',

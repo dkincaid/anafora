@@ -25,33 +25,34 @@ RUN useradd -m -g anaforaadmin -d $anafora_home anafora
 RUN curl -SL https://github.com/weitechen/anafora/archive/v${anafora_version}.tar.gz \
      | tar -xzC $anafora_home
 
-RUN htdigest -c $anafora_app/anafora.htdigest anafora anafora
+COPY anafora/anafora.htdigest $anafora_app
 RUN echo "annotatorGroup: anafora" > $anafora_app/anafora.authgroup
 
 RUN chgrp -R www-data $anafora_app
 RUN chmod -R g+rw $anafora_app
 
+# Copy over sample project
 RUN mkdir $anafora_home/project_root
-RUN chown anafora.www-data $anafora_home/project_root
 COPY anafora/sampleanaforaprojectfile $anafora_home/project_root
+RUN rm $anafora_app/src/main/web/settings.*
+COPY anafora/settings.py $anafora_app/src/main/web
+RUN chown -R anafora.www-data $anafora_home/project_root
 RUN chmod -R g+rw $anafora_home/project_root
 
-RUN export PYTHONPATH=$anafora_app
+ENV PYTHONPATH=$anafora_app/src/main
 
 # TODO: need to figure out how to use the variables for the anafora app directory
-COPY anafora/settings.py $anafora_app/src/main
-RUN sed -i "s/TIME_ZONE.*/TIME_ZONE = 'America\/Chicago'/g" $anafora_app/src/main/settings.py
-RUN sed -i "s/STATIC_ROOT.*/STATIC_ROOT = '\/home\/anafora\/anafora-1.1\/src\/main\/static'/g" $anafora_app/src/main/settings.py
-RUN sed -i "s/STATIC_URL.*/STATIC_URL = '\/static\/'/" $anafora_app/src/main/settings.py
-RUN sed -i "s/ROOT_URL.*/ROOT_URL = '\/anafora'/" $anafora_app/src/main/settings.py
-RUN sed -i "s/SECRET_KEY.*/SECRET_KEY = 'changeme'/" $anafora_app/src/main/settings.py
-RUN sed -i "s/TEMPLATE_DIRS.*/TEMPLATE_DIRS = ('\/home\/anafora\/anafora-1.1\/src\/Templates',)/" $anafora_app/src/main/settings.py
-RUN sed -i "s/ANAFORA_PROJECT_FILE_ROOT.*/ANAFORA_PROJECT_FILE_ROOT = '\/home\/anafora\/project_root'/" $anafora_app/src/main/settings.py
-RUN sed -i "s/GROUP_FILE.*/GROUP_FILE = '\/home\/anafora\/anafora-1.1\/anafora.authgroup/" $anafora_app/src/main/settings.py
-RUN sed -i "s/ADMIN_GROUPNAME.*/ADMIN_GROUPNAME = 'anaforaadmin'/" $anafora_app/src/main/settings.py
-RUN sed -i "s/ANAFORA_PROJECT_SETTING_FILENAME.*/ANAFORA_PROJECT_SETTING_FILENAME = '.setting.xml' /" $anafora_app/src/main/settings.py
-
-
+RUN sed -i "s/TIME_ZONE.*/TIME_ZONE = 'America\/Chicago'/g" $anafora_app/src/main/web/settings.py
+RUN sed -i "s/STATIC_ROOT.*/STATIC_ROOT = '\/home\/anafora\/anafora-1.1\/src\/main\/static'/g" $anafora_app/src/main/web/settings.py
+RUN sed -i "s/STATIC_URL.*/STATIC_URL = '\/static\/'/" $anafora_app/src/main/web/settings.py
+RUN sed -i "s/ROOT_URL =.*/ROOT_URL = '\/anafora'/" $anafora_app/src/main/web/settings.py
+RUN sed -i "s/STATICFILES_DIRS.*/STATICFILES_DIRS = ('','\/home\/anafora\/anafora-1.1\/src\/main\/static',)/" $anafora_app/src/main/web/settings.py
+RUN sed -i "s/SECRET_KEY.*/SECRET_KEY = 'changeme'/" $anafora_app/src/main/web/settings.py
+RUN sed -i "s/TEMPLATE_DIRS.*/TEMPLATE_DIRS = ('\/home\/anafora\/anafora-1.1\/src\/Templates',)/" $anafora_app/src/main/web/settings.py
+RUN sed -i "s/ANAFORA_PROJECT_FILE_ROOT.*/ANAFORA_PROJECT_FILE_ROOT = '\/home\/anafora\/project_root'/" $anafora_app/src/main/web/settings.py
+RUN sed -i "s/GROUP_FILE.*/GROUP_FILE = '\/home\/anafora\/anafora-1.1\/anafora.authgroup'/" $anafora_app/src/main/web/settings.py
+RUN sed -i "s/ADMIN_GROUPNAME.*/ADMIN_GROUPNAME = 'anaforaadmin'/" $anafora_app/src/main/web/settings.py
+RUN sed -i "s/ANAFORA_PROJECT_SETTING_FILENAME.*/ANAFORA_PROJECT_SETTING_FILENAME = '.setting.xml' /" $anafora_app/src/main/web/settings.py
 
 # Run Apache web server
 EXPOSE 80
