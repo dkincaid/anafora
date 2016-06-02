@@ -20,8 +20,8 @@ COPY apache/alias.conf /etc/apache2/mods-available/
 RUN echo "WSGIScriptAlias /anafora /home/anafora/anafora-1.1/src/main/web/wsgi.py" >> /etc/apache2/apache2.conf
 
 # Anafora setup stuff
-RUN groupadd anaforaadmin
-RUN useradd -m -g anaforaadmin -d $anafora_home anafora
+RUN groupadd -g 1000 anaforaadmin
+RUN useradd -u 1000 -m -g anaforaadmin -d $anafora_home anafora
 RUN curl -SL https://github.com/weitechen/anafora/archive/v${anafora_version}.tar.gz \
      | tar -xzC $anafora_home
 
